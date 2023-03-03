@@ -83,6 +83,81 @@ Prometheus & Grafana
 			Content-Length: 0	
 
 
+**2. Node Exporter **
+
+	[Node Exporter]
+	- https://prometheus.io/docs/instrumenting/exporters/
+	- https://prometheus.io/docs/guides/node-exporter/
+	- https://github.com/prometheus/node_exporter
+	
+
+	[Install by docker]
+	docker run -d \
+	  --name=node_exporter
+	  --net="host" \
+	  --pid="host" \
+	  -v "/:/host:ro,rslave" \      <= forbidden changing host root volume, check host root volumn changes
+	  quay.io/prometheus/node-exporter:latest \
+	  --path.rootfs=/host
+	
+	[Install by systemctl]
+	- sudo docker rm node_exporter
+	- https://prometheus.io/download/#node_exporter : Check url & Copy
+	wget https://github.com/prometheus/node_exporter/releases/download/v1.5.0/node_exporter-1.5.0.linux-amd64.tar.gz
+	tar xvfz node_exporter-1.5.0.linux-amd64.tar.gz
+	cd node_exporter-1.5.0.linux-amd64.tar.gz
+	./node_exporter
+	
+	*on /opt
+	- tar -C /opt -xvzf node_exporter-1.5.0.linux-amd64.tar.gz
+	- ln -s /opt/node_exporter-1.5.0.linux-amd64 /opt/node_exporter
+	- echo "OPTION=" > /etc/default/node_exporter
+	
+	*node_exporter.service
+	cat << EOF < /etc/systemd/system/node_exporter.service
+	> [Service]
+	> User=root
+	> EnvironmentFile=/etc/default/node_exporter
+	> ExecSTart=/opt/node_exporter/node_exporter
+	> EOF
+	
+	*systemctl daemon-reload
+	
+	*systemctl start node_exporter.service
+	
+	
+**3. Discovery **
+
+	[Description]
+	get target server info
+	
+	[Install]
+	- cd /prometheus/config
+	- mv prometheus.yml static_sd.yml
+	- vim /prometheus/config/file_sd.yml
+	    ==========================
+		scrape_configs:
+	    - job_name: 'prometheus'
+	      follow_redirects: true
+		  scrape_interval: 5s
+		  scrape_timeout: 1s
+		
+		  file_sd_configs:
+		  - files:
+			- sd/*.yml
+	    ==========================
+	- ln -sf file_sd.yml prometheus.yml
+	- vim sd/localhost.yml
+		==========================
+		-targets:
+	       - localhost:9100
+		   labels:
+		      region: KR
+			  tier: frontend
+			  environment: development
+			  disk: NVMe
+	    ==========================
+
 ## B. Grafana?
 
 **1. Install **
