@@ -148,14 +148,14 @@ Prometheus & Grafana
 	    ==========================
 	- ln -sf file_sd.yml prometheus.yml
 	- vim sd/localhost.yml
-		==========================
-		-targets:
+	    ==========================
+	    -targets:
 	       - localhost:9100
-		   labels:
-		      region: KR
-			  tier: frontend
-			  environment: development
-			  disk: NVMe
+	       labels:
+	          region: KR
+	    	  tier: frontend
+	    	  environment: development
+	    	  disk: NVMe
 	    ==========================
 
 ## B. Grafana?
