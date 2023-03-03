@@ -24,11 +24,11 @@ Prometheus & Grafana
 	    ==========================
 		scrape_configs:
 		  - job_name: 'prometheus'
-			scrape_interval: 5s
-			scrape_timeout: 1s
-			static_configs:
-			- targets:
-			  - localhost:9090
+		    scrape_interval: 5s
+		    scrape_timeout: 1s
+		    static_configs:
+		    - targets:
+		      - localhost:9090
 	    ==========================
 	
 	[Prometheus start / Stop / Reuse]
@@ -139,12 +139,12 @@ Prometheus & Grafana
 		scrape_configs:
 	    - job_name: 'prometheus'
 	      follow_redirects: true
-		  scrape_interval: 5s
-		  scrape_timeout: 1s
+	      scrape_interval: 5s
+	      scrape_timeout: 1s
 		
-		  file_sd_configs:
-		  - files:
-			- sd/*.yml
+	      file_sd_configs:
+	      - files:
+	        - sd/*.yml
 	    ==========================
 	- ln -sf file_sd.yml prometheus.yml
 	- vim sd/localhost.yml
@@ -153,9 +153,9 @@ Prometheus & Grafana
 	       - localhost:9100
 	       labels:
 	          region: KR
-	    	  tier: frontend
-	    	  environment: development
-	    	  disk: NVMe
+	          tier: frontend
+	          environment: development
+	          disk: NVMe
 	    ==========================
 
 ## B. Grafana?
