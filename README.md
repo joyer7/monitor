@@ -188,6 +188,39 @@ Prometheus & Grafana
 	    ==========================
 	- curl localhost:9090/-/reload -XPOST -D /dev/stdout
 	- http://43.201.xx.xx:9090/service-discovery
+	
+**4. Metric **
+	
+	[Install]
+	- sudo apt install -y python3-pip
+	- python3 -m pip install prometheus_client
+	- mkdir agent_python && cd agent_python
+	- vim agent.py
+	    ==========================
+	    import time
+		import http.server
+		import prometheus_client import Histogram, start_http_server
+		
+		histogram = Histogram(
+		'response_time_histogram',
+		'Response time for a request',
+		buckets=[0.0003, 0.00035, 0.0004, 0.0005])
+	
+		class Driver(http.server.BaseHTTPRequestHandler):
+		   def do_GET(self):
+		   start = time.time()
+		   self.send_response(200)
+		   self.wfile.write(b"Histogram Test")
+		   histogram.observe(time.time() - start)
+		
+		if _name__ == "__main__":
+		   start_http_server(8081)
+		   server = http.server.HTTPServer(('localhost',8000), Driver)
+		   print('Exporter running on 8081')
+		   print('Server running on 8080')
+		   server.servr_forever()
+	- python3 agent.py
+	
 
 ## B. Grafana?
 
