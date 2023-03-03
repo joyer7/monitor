@@ -47,6 +47,10 @@ Prometheus & Grafana
 		--storage.tsdb.path=/data
 		--web.enable-lifecycle
 		--log.level=debug
+		
+		* run check
+		buntu@ip-172-31-11-11:~$ ss -ntlp
+		
 
 	[Logs]
 	- step07 : logs
