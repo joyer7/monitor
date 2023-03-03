@@ -130,6 +130,7 @@ Prometheus & Grafana
 
 	[Description]
 	get target server info
+	http://43.201.xx.xx:9090/service-discovery
 	
 	[Install]
 	- cd /prometheus/config
@@ -146,6 +147,7 @@ Prometheus & Grafana
 	      - files:
 	        - sd/*.yml
 	    ==========================
+		
 	- ln -sf file_sd.yml prometheus.yml
 	- vim sd/localhost.yml
 	    ==========================
@@ -157,29 +159,43 @@ Prometheus & Grafana
 	          environment: development
 	          disk: NVMe
 	    ==========================
+		
+	- curl localhost:9090/-/reload -XPOST -D /dev/stdout
+	- http://43.201.xx.xx:9090/service-discovery
+
+
+	[Label Change]
+	- vim /prometheus/config/file_sd.yml
+	    ==========================
+		scrape_configs:
+	    - job_name: 'prometheus'
+	      follow_redirects: true
+	      scrape_interval: 5s
+	      scrape_timeout: 1s
+		
+	      file_sd_configs:
+	      - files:
+	        - sd/*.yml
+	      relabel_configs:
+	      - cource_lavels: [__adress__']
+	        regex: '(.*):(.*)'
+	        replacement: '${1}'
+	        target_label: 'instance'
+	      - cource_lavels: [__adress__']
+	        regex: '(.*):(.*)'
+	        replacement: '${2}'
+	        target_label: 'port'
+	    ==========================
+	- curl localhost:9090/-/reload -XPOST -D /dev/stdout
+	- http://43.201.xx.xx:9090/service-discovery
 
 ## B. Grafana?
 
 **1. Install **
 
-	[Docker]
-    - step01 : sudo apt update
-	- step02 : sudo apt install -y docker.io
-	
-	[Prometheus Install]
-    - step03 : sudo mkdir -p /prometheus/config /prometheus/data
-    - step04 : vim /prometheus/config/prometheus.yml
-	    ==========================
-		scrape_configs:
-		  - job_name: 'prometheus'
-			scrape_interval: 5s
-			scrape_timeout: 1s
-			static_configs:
-			- targets:
-			  - localhost:9090
-		==========================
-	
-	
+
+
+
 ## C. Use It!
     - windows key + R
     - type "CMD"  and run CMD Window
